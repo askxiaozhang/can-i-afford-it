@@ -53,7 +53,8 @@ export default defineConfig(({ mode }) => {
             { src: 'icons/icon-512-maskable.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
           ],
         },
-        workbox: { globPatterns: ['**/*.{js,css,html,svg,png,woff2}'], globIgnores: ['download/**'], navigateFallbackDenylist: [/\/download\//] },
+        // skipWaiting + clientsClaim：新版本装好就立刻接管，玩家刷新一次就是新版
+        workbox: { globPatterns: ['**/*.{js,css,html,svg,png,woff2}'], globIgnores: ['download/**'], navigateFallbackDenylist: [/\/download\//], skipWaiting: true, clientsClaim: true, cleanupOutdatedCaches: true },
       }),
     ],
     test: { environment: 'node', include: ['tests/**/*.test.js'] },
