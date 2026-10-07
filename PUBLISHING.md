@@ -56,8 +56,8 @@ git push -u origin main
 1. 登录 itch.io → **Upload new project**。
 2. **Kind of project** 选 **HTML**。
 3. **Uploads** 上传 `release/can-i-afford-it-v0.1.0-itch.zip`，勾选 **This file will be played in the browser**。
-4. **Embed options**：视口尺寸建议 420 × 820，勾选 **Mobile friendly** 和 **Fullscreen button**。
-5. **Pricing** 选 **No payments** 或 **Donate**（想付多少付多少，玩家可以不付）。
+4. **Embed options**：视口尺寸 420 × 760（笔记本屏幕也放得下），勾选 **Mobile friendly**（方向选 Portrait）、**Fullscreen button**、**Enable scrollbars**、**Automatically start on page load**。
+5. **Pricing** 选 **$0 or donate**（玩家可以不付）。想真正收到打赏，需要先在 itch.io 的收款设置（<https://itch.io/user/settings/seller>）里绑定收款方式。
 6. 可以再把 `can-i-afford-it-v0.1.0.html` 作为可下载文件上传一份。
 7. 发布后把 itch.io 页面地址填回 `src/config.json` 的 `itchPage`，重新构建。
 

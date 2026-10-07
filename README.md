@@ -24,6 +24,7 @@
 ## 怎么玩
 
 - **网页版**：<https://askxiaozhang.github.io/can-i-afford-it/>
+- **itch.io**：<https://askxiaozhang.itch.io/can-i-afford-it>
 - **下载版**：在 [Releases](https://github.com/askxiaozhang/can-i-afford-it/releases) 里下载 `can-i-afford-it-v版本号.html`，双击用浏览器打开，断网也能玩。
 - **装到手机**：用手机浏览器打开网页版，选"添加到主屏幕"，之后可以离线玩。
 
