@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>买得起吗</title>
+  <meta name="description" content="开源的买房与消费模拟游戏：填工资、挑房子、找银行，一个月一个月地还房贷，看看冲动消费和有计划消费的差别。">
+  <meta name="theme-color" content="#BC3226">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="买得起吗">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png">
+</head>
+<body>
+<div class="app" id="app">
+  <header class="topbar">
+    <div class="brand"><div class="seal" aria-hidden="true">买</div><div class="brand-name">买得起吗</div></div>
+    <div class="tabs" role="tablist" aria-label="页面">
+      <button class="tab" role="tab" id="tab-life" aria-selected="true" data-tab="life">人生</button>
+      <button class="tab" role="tab" id="tab-compare" aria-selected="false" data-tab="compare">买房vs投资</button>
+      <button class="tab" role="tab" id="tab-calc" aria-selected="false" data-tab="calc">房贷计算器</button>
+    </div>
+  </header>
+
+  <section class="view" id="v-start"></section>
+  <section class="view" id="v-listings" hidden></section>
+  <section class="view" id="v-loan" hidden></section>
+  <section class="view" id="v-life" hidden></section>
+  <section class="view" id="v-end" hidden></section>
+  <section class="view" id="v-compare" hidden></section>
+  <section class="view" id="v-calc" hidden></section>
+</div>
+<div class="action-bar" id="action-bar" hidden></div>
+<div class="sticky-cta" id="loan-cta" hidden></div>
+<div class="modal" id="modal" hidden><div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title"></div></div>
+<div class="toast" id="toast" hidden></div>
+<noscript><p style="padding:16px">这个游戏需要开启 JavaScript 才能运行。</p></noscript>
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>
