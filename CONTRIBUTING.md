@@ -24,6 +24,8 @@ npm test        # 提交前必须通过
 | `renovation.json` | 装修档位单价、风格、工期 |
 | `plans.json` | 户型平面图模板 |
 | `glossary.json` | 术语解释 |
+| `creditcard.json` | 第二关的信用卡规则：最低还款、日息、全额计息、违约金、分期费率、额度 |
+| `temptations.json` | 第二关的消费诱惑：价格、三种买法的参数、开心值和消退速度 |
 
 规则：
 

@@ -8,6 +8,7 @@ import { ASSETS, assetById, cityById } from '../data/index.js';
 import { charts, lineChart } from './charts.js';
 import { $ } from './dom.js';
 import { UI, store } from './state.js';
+import { levelSegHTML } from './spend.js';
 
 /* ============================================================
    结局
@@ -39,6 +40,7 @@ export function renderEnd(){
   if(E.type==='foreclose'){ buyFinal = g.cash + g.gjjBal + (E.rest||0); }
   const v = $('#v-end');
   v.innerHTML = `
+  ${levelSegHTML()}
   <div class="card stack ending">
     <div class="row" style="gap:16px"><div class="avatar">${avatarSVG(S)}</div><div class="stack-s"><span class="titlebadge">${badge}</span><h1>${title}</h1></div></div>
     <p class="answer">${text}</p>

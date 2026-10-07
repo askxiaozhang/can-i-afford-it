@@ -368,3 +368,40 @@ a.opt{text-decoration:none;color:var(--ink)}
 .qr{display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px 0}
 .qr img{width:220px;height:220px;border-radius:8px;border:1px solid var(--line);background:#fff}
 .hero-copy .eyebrow{display:block;margin-bottom:2px}
+
+/* ---------- 第二关：日常消费 ---------- */
+.level-seg button{flex:1;font-weight:600}
+.hero-art{display:flex;justify-content:center}
+.hero-art svg{display:block;width:100%;height:auto;max-height:200px;max-width:520px}
+.rules{padding-left:1.3em;display:flex;flex-direction:column;gap:8px;font-size:14px;line-height:1.6}
+.tm{border:1px solid var(--line);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:10px;background:var(--paper-2)}
+.tm-head{display:flex;gap:10px;align-items:flex-start}
+.tm-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.tm-t b{font-size:15px}
+.tm .choice{background:var(--paper)}
+.tm .choice .joy{color:var(--muted)}
+.choice.danger[aria-pressed="true"]{border-color:var(--warn);box-shadow:inset 0 0 0 1px var(--warn);background:var(--warn-soft)}
+.badge{flex:none;width:36px;height:36px;border-radius:8px;display:grid;place-items:center;font-weight:900;font-family:var(--f-display);color:#fff;font-size:16px}
+.badge.sm{width:28px;height:28px;font-size:13px;border-radius:6px}
+.k-thing{background:#8C6A4F}.k-experience{background:#3E7C74}.k-consumable{background:#B07A2A}.k-tool{background:#4F6A8C}.k-social{background:#9C4F6A}.k-need{background:#6B6B6B}
+.bill-total{font-family:var(--f-num);font-size:30px;font-weight:600;line-height:1.1}
+.bill-opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+@media (max-width:380px){ .bill-opts{grid-template-columns:1fr} }
+.wish{display:flex;flex-direction:column;gap:6px;padding:8px 0;border-top:1px dashed var(--line)}
+.wish:first-of-type{border-top:0}
+.wish.ripe{border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--paper-2)}
+.wish .choices{grid-template-columns:repeat(3,minmax(0,1fr))}
+.joyrow{display:grid;grid-template-columns:minmax(4em,7em) 1fr auto;gap:8px;align-items:center;font-size:13px}
+.joyrow .n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.callout{background:var(--warn-soft);border:1px solid var(--warn);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:4px}
+.todo.flash,.card.flash{animation:flash 1.2s ease-out}
+.action-bar .in.in2{grid-template-columns:1fr auto}
+.tbl tr.me th,.tbl tr.me td{background:var(--seal-soft);font-weight:700}
+.buyrow{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:6px 0;border-top:1px dashed var(--line)}
+.buyrow .n small{display:block;color:var(--muted);font-size:12px}
+.buyrow .num{text-align:right}
+.tm .choices.tm-choices{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.tm .choice{padding:8px 8px 9px;gap:3px}
+.tm .choice .ct{font-size:13.5px}
+.tm .choice .ce{font-size:11.5px;line-height:1.4}
+.tm .choice[aria-pressed="true"]::after{right:6px;top:6px}

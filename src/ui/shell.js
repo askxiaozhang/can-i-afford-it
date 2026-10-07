@@ -11,6 +11,7 @@ import { renderLife } from './life.js';
 import { renderListings } from './listings.js';
 import { renderLoan } from './loan.js';
 import { renderStart } from './start.js';
+import { renderSpendEnd, renderSpendPlay, renderSpendStart, spendStage } from './spend.js';
 import { UI, save, store } from './state.js';
 
 export function toast(msg, ms=2600){ const t=$('#toast'); t.textContent=msg; t.hidden=false; clearTimeout(toast._t); toast._t=setTimeout(()=>t.hidden=true, ms); }
@@ -43,11 +44,11 @@ export function setTab(tab){
 export function lifeStage(){ return store.G ? (store.G.ended ? 'end' : 'life') : UI.stage; }
 export function render(){
   charts.list = [];
-  const views = ['start','listings','loan','life','end','compare','calc'];
-  const cur = UI.tab==='life' ? lifeStage() : UI.tab;
+  const views = ['start','listings','loan','life','end','sstart','splay','send','compare','calc'];
+  const cur = UI.tab==='life' ? (UI.level==='spend' ? spendStage() : lifeStage()) : UI.tab;
   views.forEach(v=>{ $('#v-'+v).hidden = v!==cur; });
-  $('#app').classList.toggle('wide', cur==='life' || cur==='compare');
-  $('#action-bar').hidden = cur!=='life';
+  $('#app').classList.toggle('wide', ['life','compare','splay','send'].includes(cur));
+  $('#action-bar').hidden = !(cur==='life' || cur==='splay');
   $('#loan-cta').hidden = cur!=='loan';
-  ({start:renderStart, listings:renderListings, loan:renderLoan, life:renderLife, end:renderEnd, compare:renderCompare, calc:renderCalc})[cur]();
+  ({start:renderStart, listings:renderListings, loan:renderLoan, life:renderLife, end:renderEnd, sstart:renderSpendStart, splay:renderSpendPlay, send:renderSpendEnd, compare:renderCompare, calc:renderCalc})[cur]();
 }

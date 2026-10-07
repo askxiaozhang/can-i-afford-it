@@ -2,6 +2,7 @@
 import { deepPackOf } from '../data/index.js';
 import { START_Y } from './calendar.js';
 import { clamp, makeRng } from './util.js';
+import { spendDefaults } from './spend.js';
 import { NAME_A, NAME_B, cityById } from '../data/index.js';
 
 /* 深度城市包：房源来自 data/cities/<包名>.json */
@@ -26,7 +27,7 @@ export function genDeep(city, pack, seed){
 
 export function defaultCfg(cityId){
   const c = cityById(cityId);
-  return {cityId:c.id, age:28, salary:c.salary, bonus:1, gjjPct:7, savings:c.id==='hg'?50000:300000, gift:c.id==='hg'?0:200000, living:c.living, spouse:false, spouseSalary:Math.round(c.salary*0.9/500)*500, market:'random'};
+  return {cityId:c.id, age:28, salary:c.salary, bonus:1, gjjPct:7, savings:c.id==='hg'?50000:300000, gift:c.id==='hg'?0:200000, living:c.living, spouse:false, spouseSalary:Math.round(c.salary*0.9/500)*500, market:'random', ...spendDefaults(c.id)};
 }
 
 /* ---------- 房源 ---------- */

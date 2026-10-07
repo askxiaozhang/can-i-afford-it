@@ -1,6 +1,6 @@
 {
   "name": "can-i-afford-it",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "买得起吗：一个关于买房、贷款和冲动消费的开源模拟游戏",
   "private": true,
   "type": "module",

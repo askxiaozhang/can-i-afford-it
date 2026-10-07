@@ -1,7 +1,8 @@
 /* 房贷计算器页。 */
 import { annuity, combinedSchedule, schedule } from '../core/finance.js';
 import { pct, wan, yuan } from '../core/util.js';
-import { GJJ_RATE, LPR5 } from '../data/index.js';
+import { CARD, GJJ_RATE, LPR5 } from '../data/index.js';
+import { aprOf, revolveAPR } from '../core/spend.js';
 import { barChart, charts } from './charts.js';
 import { $ } from './dom.js';
 import { methodExplainHTML, term } from './help.js';
@@ -11,10 +12,12 @@ import { UI, save } from './state.js';
    房贷计算器
    ============================================================ */
 export function renderCalc(){
+  if(UI.calcMode==='card') return renderCardCalc();
   if(!UI.calc) UI.calc = {com:1000000, comRate:3.05, gjj:0, gjjRate:2.6, years:30, method:'ei', ppYear:5, ppAmt:200000};
   const c = UI.calc;
   const v = $('#v-calc');
   v.innerHTML = `
+  ${calcModeSeg()}
   <div class="stack-s"><span class="eyebrow">房贷计算器</span><h2>每个月还多少，利息一共多少</h2><p class="small muted">商贷按 LPR ${LPR5}% 减点（首套常见 3.05%），公积金首套 ${GJJ_RATE}%。支持组合贷和提前还款。</p></div>
   <div class="card stack">
     <div class="grid2">
@@ -83,7 +86,60 @@ export function updateCalc(){
       <div class="tbl-wrap"><table class="tbl fit"><thead><tr><th>方案</th><th>之后月供</th><th>剩余</th><th>少付利息</th></tr></thead><tbody>
       <tr><td>缩短年限</td><td>${yuan(payShort)}</td><td>${nShort} 期</td><td style="color:var(--plus)">${yuan(intBefore-iShort)}</td></tr>
       <tr><td>减少月供</td><td>${yuan(payLess)}</td><td>${left} 期</td><td style="color:var(--plus)">${yuan(intBefore-iLess)}</td></tr></tbody></table></div>
-      <p class="small">缩短年限：月供不变，少还 ${left-nShort} 期，省的利息更多。减少月供：期数不变，每个月更宽裕。减少月供让每个月更宽裕。如果手上的钱投资年化能稳定超过 ${c.comRate}%，提前还款就不一定划算。</p>`;
+      <p class="small">缩短年限：月供不变，少还 ${left-nShort} 期，省的利息更多。减少月供：期数不变，每个月更宽裕。如果手上的钱投资年化能稳定超过 ${c.comRate}%，提前还款就不一定划算。</p>`;
   } else $('#calc-pp').innerHTML = '<p class="small muted">填一个提前还款金额看看能省多少利息。</p>';
+  save();
+}
+
+/* ============================================================
+   信用卡分期计算器：每期手续费看着低，折算年化是多少；和只还最低比一比
+   ============================================================ */
+const calcModeSeg = () => `<div class="seg level-seg" role="group" aria-label="计算器"><button data-calcmode="mort" aria-pressed="${UI.calcMode!=='card'}">房贷</button><button data-calcmode="card" aria-pressed="${UI.calcMode==='card'}">信用卡分期</button></div>`;
+export const feeFor = n => Math.round((CARD.installments.find(o=>o.n===n) || CARD.installments[CARD.installments.length-1]).fee*10000)/100;
+export function renderCardCalc(){
+  if(!UI.ccalc) UI.ccalc = { amt:10000, n:12, fee:feeFor(12) };
+  const c = UI.ccalc;
+  $('#v-calc').innerHTML = `
+  ${calcModeSeg()}
+  <div class="stack-s"><span class="eyebrow">信用卡分期计算器</span><h2>"每期只要 0.65%"，到底贵不贵</h2><p class="small muted">分期手续费按最初的本金算，每期都一样；可你欠的本金每个月都在变少。所以要换算成折算年化${term('apr')}才看得出真实成本。</p></div>
+  <div class="card stack">
+    <div class="grid2">
+      <div class="field"><label for="cc-amt">分期金额</label><div class="inp-wrap"><input class="inp num" id="cc-amt" data-ccalc="amt" type="number" inputmode="numeric" min="0" step="1000" value="${c.amt}"><span class="unit">元</span></div></div>
+      <div class="field"><span class="lab">分几期</span><div class="seg" id="seg-cc-n">${[3,6,12,24].map(n=>`<button data-ccn="${n}" aria-pressed="${c.n===n}">${n} 期</button>`).join('')}</div></div>
+      <div class="field"><label for="cc-fee">每期手续费率 <span class="num" id="cco-fee">${c.fee}%</span></label><input type="range" id="cc-fee" data-ccalc="fee" data-unit="%" min="0" max="1.5" step="0.05" value="${c.fee}"></div>
+    </div>
+  </div>
+  <div class="card stack">
+    <div class="kpis" id="cc-kpis"></div>
+    <h3>同样的钱，${c.n} 个月里三种还法</h3>
+    <div class="tbl-wrap"><table class="tbl fit" id="cc-vs"></table></div>
+    <p class="small" id="cc-note"></p>
+  </div>`;
+  updateCardCalc();
+}
+/* 只还最低：第一期全额计息（从记账日算），之后对没还的部分按日息计息 */
+export function minPayPath(P, months){
+  const d = CARD.dailyRate; let carry = P, int = 0, paidInt = 0, first = 0, last = 0;
+  for(let k=1;k<=months;k++){
+    const min = int + CARD.minPayRate*carry; if(k===1) first = min; last = min;
+    paidInt += int;
+    const prin = CARD.minPayRate*carry; const before = carry; carry -= prin;
+    int = (k===1 && CARD.fullInterest ? before*d*CARD.firstCycleDays : 0) + carry*d*CARD.cycleDays;
+  }
+  return { first, last, paidInt: paidInt + int, left: carry };
+}
+export function updateCardCalc(){
+  const c = UI.ccalc; const P = Math.max(0, c.amt), n = c.n, f = c.fee/100;
+  const per = P/n + P*f, fees = P*f*n, apr = aprOf(n, f);
+  $('#cc-kpis').innerHTML = P<=0 ? '<p class="small muted">先填分期金额。</p>' : `
+    <div class="kpi"><div class="k">每期还</div><div class="v">${yuan(per)}</div></div>
+    <div class="kpi"><div class="k">手续费合计</div><div class="v" style="color:var(--s-buy)">${yuan(fees)}</div></div>
+    <div class="kpi"><div class="k">折算年化</div><div class="v">${pct(apr,1)}</div></div>`;
+  const M = minPayPath(P, n);
+  $('#cc-vs').innerHTML = P<=0 ? '' : `<thead><tr><th>还法</th><th>每月还</th><th>${n} 个月的利息/手续费</th><th>${n} 个月后还欠</th></tr></thead><tbody>
+    <tr class="hl"><td>账单分期 ${n} 期</td><td>${yuan(per)}</td><td>${yuan(fees)}</td><td>0</td></tr>
+    <tr><td>只还最低 ${term('minpay')}</td><td>${yuan(M.first)} → ${yuan(M.last)}</td><td>${yuan(M.paidInt)}</td><td>${yuan(M.left)}</td></tr>
+    <tr><td>先攒钱，再买</td><td>—</td><td>0</td><td>0</td></tr></tbody>`;
+  $('#cc-note').innerHTML = P<=0 ? '' : `每期 ${pct(c.fee,2)} 乘以 12 是 ${pct(c.fee*12,1)}，但实际折算年化是 <b>${pct(apr,1)}</b>，因为你占用银行的钱越来越少，手续费却没少。只还最低更贵：循环利息年化 ${pct(revolveAPR(),2)}，${n} 个月后还欠 ${yuan(M.left)}。房贷利率才 3% 左右。`;
   save();
 }

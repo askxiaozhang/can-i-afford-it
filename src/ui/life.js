@@ -195,9 +195,11 @@ export async function moreMenu(){
     {id:'repay', label:'还清其他借款', sub: debt>0?`网贷/消费贷/亲友借款共 ${wan(debt)}`:'没有其他借款', disabled: debt<=0},
     {id:'sell', label:'卖掉房子', sub:'按估值挂牌出售，结束这一局'},
     {id:'quit', label:'到此为止，看结算', sub:'不卖房，直接看现在的成绩单'},
+    {id:'lvl2', label:'去玩第二关：日常消费', sub:'这一局会保留，随时回来'},
     {id:'restart', label:'重新开局', sub:'放弃这一局，回到选城市', cls:'danger'},
     {id:'x', label:'取消'},
   ]});
+  if(c==='lvl2'){ UI.level='spend'; save(); render(); window.scrollTo({top:0}); return; }
   if(c==='prepay') return prepayFlow();
   if(c==='repay') return repayFlow();
   if(c==='sell'){

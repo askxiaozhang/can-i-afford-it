@@ -11,6 +11,8 @@ import reno from './renovation.json';
 import plans from './plans.json';
 import glossary from './glossary.json';
 import chengdu from './cities/chengdu.json';
+import creditcard from './creditcard.json';
+import temptations from './temptations.json';
 
 export const POLICY = policy;
 export const DATA_AS_OF = policy.asOf;
@@ -46,3 +48,9 @@ export const deepPackOf = city => city && city.deepPack ? DEEP_PACKS[city.deepPa
 /* 兼容旧代码 */
 export const CD_SPECS = chengdu.listings;
 export const SEGS = chengdu.segments;
+
+/* 第二关：信用卡规则和消费诱惑 */
+export const CARD = creditcard;
+export const TEMPT = temptations;
+export const KINDS = temptations.kinds;
+export const temptById = id => temptations.items.find(x => x.id === id);

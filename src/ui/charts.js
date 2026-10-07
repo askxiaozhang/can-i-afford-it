@@ -9,17 +9,17 @@ export function niceStep(range, count){ const raw = range/count; const p = Math.
 export function lineChart(el, opt){
   if(!el) return;
   const draw = ()=>{
-    const {series, band, xLabel, height=260, compact, xTick} = opt;
+    const {series, band, xLabel, height=260, compact, xTick} = opt; const fmt = opt.fmt || wan;
     const W = Math.max(280, el.clientWidth||600), H = height;
     const m = {l:compact?46:58, r:compact?10:14, t:14, b:compact?22:30};
     const n = series[0].data.length; if(n<2){ el.innerHTML=''; return; }
-    const vals = series.flatMap(s=>s.data).concat(band?band.flatMap(b=>[b.lo,b.hi]):[]).concat(compact?[]:[0]);
+    const vals = series.flatMap(s=>s.data).concat(band?band.flatMap(b=>[b.lo,b.hi]):[]).concat(compact||opt.zero===false?[]:[0]);
     let lo = Math.min(...vals), hi = Math.max(...vals);
     const step = niceStep((hi-lo)||1, compact?3:5); lo = Math.floor(lo/step)*step; hi = Math.ceil(hi/step)*step; if(hi===lo) hi = lo+step;
     const x = i => m.l + i/(n-1)*(W-m.l-m.r), y = v => m.t + (hi-v)/(hi-lo)*(H-m.t-m.b);
-    let s = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${series.map(s=>s.name).join(' 与 ')}的净资产走势">`;
+    let s = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${opt.label || series.map(s=>s.name).join(' 与 ')+'的净资产走势'}">`;
     s += '<g class="grid">'; for(let v=lo; v<=hi+step/2; v+=step){ s+=`<line x1="${m.l}" x2="${W-m.r}" y1="${r1(y(v))}" y2="${r1(y(v))}" ${Math.abs(v)<step/1e6?'style="stroke:var(--ink-2);stroke-opacity:.6"':''}/>`; } s+='</g>';
-    s += '<g class="axis">'; for(let v=lo; v<=hi+step/2; v+=step){ s+=`<text x="${m.l-8}" y="${r1(y(v))+4}" text-anchor="end">${wan(Math.abs(v)<step/1e6?0:v)}</text>`; }
+    s += '<g class="axis">'; for(let v=lo; v<=hi+step/2; v+=step){ s+=`<text x="${m.l-8}" y="${r1(y(v))+4}" text-anchor="end">${fmt(Math.abs(v)<step/1e6?0:v)}</text>`; }
     const ticks = []; const want = compact?3:Math.min(6, Math.floor((W-m.l-m.r)/90));
     if(xTick){ for(let i=0;i<n;i++) if(xTick(i)) ticks.push(i); } else { for(let k=0;k<=want;k++) ticks.push(Math.round(k*(n-1)/want)); }
     const tickSet = [...new Set(ticks)];
@@ -27,10 +27,10 @@ export function lineChart(el, opt){
     s += '</g>';
     if(band){ const c = series[1].color; let d = band.map((b,i)=>`${i?'L':'M'}${r1(x(i))} ${r1(y(b.hi))}`).join(' '); d += ' ' + band.slice().reverse().map((b,j)=>`L${r1(x(n-1-j))} ${r1(y(b.lo))}`).join(' ') + ' Z'; s+=`<path d="${d}" fill="${c}" fill-opacity=".14" stroke="none"/>`; }
     series.forEach(se=>{ const d = se.data.map((v,i)=>`${i?'L':'M'}${r1(x(i))} ${r1(y(v))}`).join(' '); s+=`<path d="${d}" fill="none" stroke="${se.color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" ${se.dash?'stroke-dasharray="5 4"':''}/>`; const lv=se.data[n-1]; s+=`<circle cx="${r1(x(n-1))}" cy="${r1(y(lv))}" r="4" fill="${se.color}" stroke="var(--paper)" stroke-width="2"/>`; });
-    if(!compact){ // 末端直接标注
+    if(!compact && opt.endLabels!==false){ // 末端直接标注
       const ends = series.map(se=>({se, yy:y(se.data[n-1])})).sort((a,b)=>a.yy-b.yy);
       for(let k=1;k<ends.length;k++) if(ends[k].yy-ends[k-1].yy<16) ends[k].yy = ends[k-1].yy+16;
-      ends.forEach(e=>{ s+=`<text class="lbl" x="${r1(x(n-1)-8)}" y="${r1(e.yy-8)}" text-anchor="end">${esc(e.se.name)} ${wan(e.se.data[n-1])}</text>`; });
+      ends.forEach(e=>{ s+=`<text class="lbl" x="${r1(x(n-1)-8)}" y="${r1(e.yy-8)}" text-anchor="end">${esc(e.se.name)} ${fmt(e.se.data[n-1])}</text>`; });
     }
     s += `<line class="xh" x1="0" x2="0" y1="${m.t}" y2="${H-m.b}" stroke="var(--ink-2)" stroke-width="1" stroke-dasharray="3 3" visibility="hidden"/>`;
     series.forEach((se,k)=>{ s+=`<circle class="hd hd${k}" r="4.5" fill="${se.color}" stroke="var(--paper)" stroke-width="2" visibility="hidden"/>`; });
@@ -43,7 +43,7 @@ export function lineChart(el, opt){
       xh.setAttribute('x1',x(i)); xh.setAttribute('x2',x(i)); xh.setAttribute('visibility','visible');
       series.forEach((se,k)=>{ const c=el.querySelector('.hd'+k); c.setAttribute('cx',x(i)); c.setAttribute('cy',y(se.data[i])); c.setAttribute('visibility','visible'); });
       tip.hidden=false;
-      tip.innerHTML = `<div class="small" style="margin-bottom:4px"><b>${esc(xLabel(i,false))}</b></div>` + series.map(se=>`<div class="tr"><span><span class="sw" style="background:${se.color}"></span> ${esc(se.name)}</span><span>${wan(se.data[i])}</span></div>`).join('') + (series.length===2?`<div class="tr muted"><span>差额</span><span>${wan(series[0].data[i]-series[1].data[i])}</span></div>`:'') + (band?`<div class="tr muted"><span>投资中间一半</span><span>${wan(band[i].lo)}~${wan(band[i].hi)}</span></div>`:'');
+      tip.innerHTML = `<div class="small" style="margin-bottom:4px"><b>${esc(xLabel(i,false))}</b></div>` + series.map(se=>`<div class="tr"><span><span class="sw" style="background:${se.color}"></span> ${esc(se.name)}</span><span>${fmt(se.data[i])}</span></div>`).join('') + (series.length===2?`<div class="tr muted"><span>差额</span><span>${fmt(series[0].data[i]-series[1].data[i])}</span></div>`:'') + (band?`<div class="tr muted"><span>投资中间一半</span><span>${wan(band[i].lo)}~${wan(band[i].hi)}</span></div>`:'');
       const top = Math.min(...series.map(se=>y(se.data[i])));
       const left = clamp(x(i)*(rect.width/W), 80, rect.width-80);
       tip.style.left = left+'px'; tip.style.top = Math.max(0, top*(rect.height/H)-10)+'px';

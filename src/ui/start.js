@@ -9,6 +9,7 @@ import { CITIES, MARKETS, cityById } from '../data/index.js';
 import { $, $$ } from './dom.js';
 import { term } from './help.js';
 import { UI, save } from './state.js';
+import { levelSegHTML } from './spend.js';
 
 /* ============================================================
    开局
@@ -17,6 +18,7 @@ export function renderStart(){
   const c = UI.cfg; const city = cityById(c.cityId);
   const v = $('#v-start');
   v.innerHTML = `
+  ${levelSegHTML()}
   <div class="hero" id="hero"><div class="hero-copy"><span class="eyebrow">第一关 · 买房</span><h1>买得起吗</h1><p>先在这里背一次房贷：选城市、填工资、挑房子、找银行，再一个月一个月地还。</p></div><div id="hero-art">${skylineSVG(city)}</div></div>
   <div class="card stack">
     <div class="row between"><h3>选一座城市</h3><span class="city-note">住宅挂牌均价 · 2026年8–9月</span></div>
@@ -64,8 +66,10 @@ export function selectCity(id){
   const old = cityById(UI.cfg.cityId), city = cityById(id);
   const oldDef = defaultCfg(old.id), newDef = defaultCfg(city.id);
   UI.cfg.cityId = id;
-  for(const k of ['salary','living','savings','gift','spouseSalary']){ if(!UI.touched[k] || UI.cfg[k]===oldDef[k]){ UI.cfg[k] = newDef[k]; const map={salary:'in-salary',living:'in-living',savings:'in-savings',gift:'in-gift',spouseSalary:'in-spouse-salary'}; const el=$('#'+map[k]); if(el) el.value = UI.cfg[k]; } }
+  for(const k of ['salary','living','savings','gift','spouseSalary','rent','cash2']){
+    if(!UI.touched[k] || UI.cfg[k]===oldDef[k] || UI.cfg[k]==null){ UI.cfg[k] = newDef[k]; $$(`[data-cfg="${k}"]`).forEach(el=>{ el.value = UI.cfg[k]; }); }
+  }
   $$('#city-grid .city').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.city===id)));
-  $('#hero-art').innerHTML = skylineSVG(city);
-  UI.listings = null; updateStartHints(); save();
+  const art = $('#hero-art'); if(art) art.innerHTML = skylineSVG(city);
+  UI.listings = null; if($('#city-hint')) updateStartHints(); save();
 }

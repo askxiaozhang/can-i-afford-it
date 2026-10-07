@@ -46,7 +46,7 @@ export async function showAbout(){
     ? `源码在 <a href="${esc(repo)}" target="_blank" rel="noopener">GitHub</a>。`
     : '源码公开在 GitHub，搜索 <b style="white-space:nowrap">can-i-afford-it</b> 就能找到。';
   const body = `<div class="txt stack-s">
-    <p>买得起吗 v${esc(VERSION)} · 第一关：买房</p>
+    <p>买得起吗 v${esc(VERSION)} · 第一关：买房 · 第二关：日常消费</p>
     <p>代码以 GPL-3.0 协议开源，数据和文案以 CC BY-SA 4.0 协议共享。${source}</p>
     <p><b>隐私</b>：${platform.privacyHTML()}</p>
     <p><b>数据</b>：房价、利率和政策截至 ${esc(DATA_AS_OF)}，来源见项目里的 DATA_SOURCES.md。随机事件和投资收益都是模拟，不构成任何理财建议。</p>
