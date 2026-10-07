@@ -23,8 +23,8 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run build
-      # 单文件版和 itch.io 压缩包也放到网站的 download/ 目录，方便直接下载
-      - run: npm run build:itch && mkdir -p dist/download && cp release/* dist/download/
+      # 下载版（单文件 HTML）也放到网站的 download/ 目录，方便直接下载
+      - run: npm run build:release && mkdir -p dist/download && cp release/*.html dist/download/
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

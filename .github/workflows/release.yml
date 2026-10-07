@@ -1,4 +1,4 @@
-# 在 GitHub 上发布一个 Release 后，自动构建单文件版和 itch.io 压缩包，附到这个 Release 上
+# 在 GitHub 上发布一个 Release 后，自动构建下载版（单文件 HTML）和 TapTap H5 上传包，附到这个 Release 上
 name: Release assets
 on:
   release:
@@ -26,5 +26,5 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm test
-      - run: npm run build:itch
+      - run: npm run build:release
       - run: gh release upload "$TAG" release/* --clobber --repo "$GITHUB_REPOSITORY"

@@ -1,10 +1,13 @@
-/* 把单文件版打包成 itch.io 能直接上传的 zip（压缩包根目录是 index.html），
-   同时复制一份可以直接下载、双击就能玩的 HTML。不依赖任何第三方库。 */
+/* 生成发布文件，放在 release/：
+   - can-i-afford-it-v版本.html         网页平台的单文件版，直接下载、双击就能玩（来自 dist-single/）
+   - can-i-afford-it-v版本-taptap.zip   TapTap H5 小游戏上传包，压缩包根目录是 index.html（来自 dist-taptap/）
+   先跑 npm run build:single 和 npm run build:taptap，或者直接 npm run build:release。不依赖任何第三方库。 */
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { deflateRawSync } from 'node:zlib';
 
 const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
 const html = readFileSync(new URL('../dist-single/index.html', import.meta.url));
+const taptapHtml = readFileSync(new URL('../dist-taptap/index.html', import.meta.url));
 const outDir = new URL('../release/', import.meta.url);
 mkdirSync(outDir, { recursive: true });
 
@@ -37,7 +40,7 @@ function zip(files){
 }
 
 const base = `can-i-afford-it-v${pkg.version}`;
-writeFileSync(new URL(`${base}-itch.zip`, outDir), zip([{ name: 'index.html', data: html }]));
 writeFileSync(new URL(`${base}.html`, outDir), html);
-console.log(`release/${base}-itch.zip  （上传到 itch.io，类型选 HTML）`);
-console.log(`release/${base}.html      （直接下载版，双击用浏览器打开就能玩）`);
+writeFileSync(new URL(`${base}-taptap.zip`, outDir), zip([{ name: 'index.html', data: taptapHtml }]));
+console.log(`release/${base}.html         （下载版，双击用浏览器打开就能玩）`);
+console.log(`release/${base}-taptap.zip   （TapTap H5 小游戏上传包）`);

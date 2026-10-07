@@ -9,8 +9,9 @@
     "dev": "vite",
     "build": "vite build",
     "build:single": "vite build --mode single",
-    "build:itch": "npm run build:single && node scripts/pack-itch.js",
-    "build:all": "npm run build && npm run build:itch",
+    "build:taptap": "vite build --mode taptap",
+    "build:release": "npm run build:single && npm run build:taptap && node scripts/pack-release.js",
+    "build:all": "npm run build && npm run build:release",
     "preview": "vite preview",
     "test": "vitest run"
   },

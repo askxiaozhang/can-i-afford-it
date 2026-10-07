@@ -15,16 +15,22 @@ const inlineIcon = {
   },
 };
 
-/* 两种构建：
+/* 三种构建：
    npm run build         → dist/：多文件网页 + PWA（可安装、离线），用于 GitHub Pages
-   npm run build:single  → dist-single/index.html：一个 HTML 文件包含全部内容，双击就能玩，用于 itch.io 和直接下载 */
+   npm run build:single  → dist-single/index.html：一个 HTML 文件包含全部内容，双击就能玩，用于直接下载
+   npm run build:taptap  → dist-taptap/index.html：同样是单文件，平台换成 TapTap（激励视频广告，不显示站外打赏），用于 TapTap H5 小游戏
+   平台的区别都在 src/platform/ 里，这里只决定 __PLATFORM__ 的值。 */
 export default defineConfig(({ mode }) => {
-  const single = mode === 'single';
+  const taptap = mode === 'taptap';
+  const single = mode === 'single' || taptap;
   return {
     base: './',
-    define: { __APP_VERSION__: JSON.stringify(pkg.version) },
+    define: {
+      __APP_VERSION__: JSON.stringify(pkg.version),
+      __PLATFORM__: JSON.stringify(taptap ? 'taptap' : 'web'),
+    },
     build: single
-      ? { outDir: 'dist-single', emptyOutDir: true, assetsInlineLimit: 100_000_000, cssCodeSplit: false, copyPublicDir: false }
+      ? { outDir: taptap ? 'dist-taptap' : 'dist-single', emptyOutDir: true, assetsInlineLimit: 100_000_000, cssCodeSplit: false, copyPublicDir: false }
       : { outDir: 'dist', emptyOutDir: true },
     plugins: single ? [viteSingleFile(), inlineIcon] : [
       VitePWA({

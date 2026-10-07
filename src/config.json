@@ -1,9 +1,13 @@
 {
   "repo": "https://github.com/askxiaozhang/can-i-afford-it",
-  "itchPage": "https://askxiaozhang.itch.io/can-i-afford-it",
   "support": {
     "afdian": "",
     "githubSponsors": "",
     "wechatQr": ""
+  },
+  "ads": {
+    "taptap": {
+      "rewardedVideo": ""
+    }
   }
 }

@@ -24,13 +24,15 @@
 ## 怎么玩
 
 - **网页版**：<https://askxiaozhang.github.io/can-i-afford-it/>
-- **itch.io**：<https://askxiaozhang.itch.io/can-i-afford-it>
+- **TapTap**：准备上架中（H5 小游戏）。
 - **下载版**：在 [Releases](https://github.com/askxiaozhang/can-i-afford-it/releases) 里下载 `can-i-afford-it-v版本号.html`，双击用浏览器打开，断网也能玩。
 - **装到手机**：用手机浏览器打开网页版，选"添加到主屏幕"，之后可以离线玩。
 
 ## 隐私
 
-你填的工资、存款和游戏存档，只保存在你自己设备的浏览器里，不上传到任何服务器，不做统计。游戏不加载任何第三方字体、统计或广告脚本。
+你填的工资、存款和游戏存档，只保存在你自己设备的浏览器里，不上传到任何服务器，不做统计。网页版和下载版不加载任何第三方字体、统计或广告脚本。
+
+TapTap 版有激励视频广告，只在玩家主动点"看一段广告支持作者"时播放，广告由 TapTap 平台提供。
 
 ## 本地开发
 
@@ -41,7 +43,7 @@ npm install
 npm run dev          # 本地开发，浏览器打开提示的地址
 npm test             # 单元测试 + 整局模拟回归
 npm run build        # 网页版（PWA，可安装、离线）→ dist/
-npm run build:itch   # 单文件版 + itch.io 压缩包 → release/
+npm run build:release  # 下载版单文件 HTML + TapTap H5 上传包 → release/
 ```
 
 ## 项目结构
@@ -52,9 +54,10 @@ src/
   data/      所有可更新的数字：城市房价、利率政策、银行、借贷平台、装修、户型、术语（JSON）
   art/       插图：天际线、房源外观、户型图、装修效果图（全部 SVG 现场生成）
   ui/        界面：每个页面一个文件，events.js 统一处理点击和输入
-  config.json  打赏链接和仓库地址（没填的不显示）
+  platform/  平台层：网页版和 TapTap 版各自的广告、内购（预留）、打赏和隐私说明
+  config.json  仓库地址、打赏链接、TapTap 广告位（没填的不显示）
 tests/       Vitest 测试
-scripts/     打包 itch.io 压缩包
+scripts/     打包下载版和 TapTap 上传包
 ```
 
 ## 数据和贡献
@@ -69,7 +72,12 @@ scripts/     打包 itch.io 压缩包
 
 ## 支持作者
 
-游戏永久免费，不卖数据，也不会加借贷类广告。觉得有用的话，可以通过游戏里"关于 · 支持作者"打赏（作者在 `src/config.json` 里配置渠道后才会显示）。
+游戏永久免费，不卖数据，也不会加借贷类广告。觉得有用的话：
+
+- 网页版和下载版：游戏里"关于 · 支持作者"可以打赏（作者在 `src/config.json` 里配置渠道后才会显示）。
+- TapTap 版：可以主动看一段广告。只换一句谢谢，不影响游戏里的任何数字。
+
+发布和上架步骤见 [PUBLISHING.md](PUBLISHING.md)。
 
 ## 许可证
 
