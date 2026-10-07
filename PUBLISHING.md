@@ -42,14 +42,14 @@ git push -u origin main
 
 ### 发一个可下载的版本
 
-```bash
-npm run build:itch
-```
+在仓库 **Releases → Draft a new release**，标签填 `v0.1.0`（和 `package.json` 的版本一致），写好说明后点 **Publish release**。
 
-在仓库 **Releases → Draft a new release**，标签填 `v0.1.0`，把 `release/` 里的两个文件拖进去：
+"Release assets" 这个 Action 会自动构建并把两个文件附到 Release 上：
 
 - `can-i-afford-it-v0.1.0.html`：直接下载版，双击就能玩
 - `can-i-afford-it-v0.1.0-itch.zip`：给 itch.io 用的压缩包
+
+本地也可以用 `npm run build:itch` 生成，文件在 `release/` 目录。
 
 ## 2. 发布到 itch.io
 
@@ -66,7 +66,7 @@ npm run build:itch
 1. 改代码或数据，跑 `npm test`。
 2. 把 `package.json` 里的 `version` 加一位（如 0.1.1）。
 3. 推送到 main，网页版会自动更新；已安装到手机主屏幕的玩家，下次打开时会自动拿到新版本。
-4. 重新 `npm run build:itch`，把新压缩包传到 itch.io。
+4. 发一个新的 Release（标签如 `v0.1.1`），等 Action 附上文件后，把新的 itch 压缩包传到 itch.io。
 
 ## 注意
 
