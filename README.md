@@ -4,9 +4,9 @@
 
 它不劝人别买，而是让你在游戏里先背一次房贷：月供吃掉多少工资、哪年利息最多、借网贷凑首付会怎样、被裁员时还不还得上，以及如果当初租房把钱拿去投资，现在差多少。
 
-
-
 https://github.com/user-attachments/assets/5bf582e9-5eab-468f-9eca-f688fc1dab68
+
+<sub>30 秒宣传片（有背景音乐，点开声音听）。</sub>
 
 <p>
   <img src="docs/start.png" width="260" alt="开局：选城市、填家底">
